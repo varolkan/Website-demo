@@ -21,7 +21,7 @@
             --primary-color: #1a1a1a;
             --border-color: #2a2a2a;
             --font-color: #e0e0e0;
-            --accent-color: #07cf43; /* DeepSkyBlue */
+            --accent-color: #07cf43;
             --accent-hover: #ffffff;
             --shadow-color: rgba(1, 131, 40, 0.1);
         }
@@ -45,6 +45,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             overflow-x: hidden;
+            padding-bottom: 60px; /* Add padding to prevent content from being hidden by the bottom bar */
         }
 
         .container {
@@ -278,6 +279,114 @@
             font-family: 'Roboto Mono', monospace;
         }
 
+        /* --- Language Selector Modal --- */
+        .lang-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .lang-modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lang-modal {
+            background-color: var(--primary-color);
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        
+        .lang-modal-overlay.visible .lang-modal {
+             transform: scale(1);
+        }
+
+        .lang-modal h3 {
+            margin-top: 0;
+            margin-bottom: 2rem;
+            font-family: 'Roboto Mono', monospace;
+            color: var(--font-color);
+        }
+
+        .lang-options {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap; /* Allows flags to wrap on smaller screens */
+        }
+
+        .lang-option {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            transition: transform 0.2s ease;
+            width: 90px; /* Give a fixed width for better alignment */
+        }
+        
+        .lang-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .lang-option img {
+            width: 80px;
+            height: 50px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+        }
+        
+        .lang-option span {
+            font-weight: 700;
+            color: var(--font-color);
+            font-size: 0.9rem;
+        }
+        
+        /* --- Language Selector Bottom Bar --- */
+        .lang-bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--primary-color);
+            border-top: 1px solid var(--border-color);
+            padding: 0.75rem 1.5rem;
+            text-align: center;
+            z-index: 99;
+        }
+
+        .lang-bottom-bar button {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.2s ease;
+        }
+        
+        .lang-bottom-bar button:hover {
+            color: var(--accent-hover);
+        }
+
         /* --- Responsive Design --- */
         @media (max-width: 768px) {
             .nav-content {
@@ -287,21 +396,59 @@
             .nav-links a {
                 margin: 0 0.75rem;
             }
+             .lang-modal {
+                padding: 2rem 1.5rem;
+            }
+            .lang-options {
+                gap: 1rem;
+            }
         }
     </style>
 </head>
 <body>
 
+    <!-- Language Selector Modal -->
+    <div id="language-modal" class="lang-modal-overlay">
+        <div class="lang-modal">
+            <h3 data-translate="modal_title">Choose a Language</h3>
+            <div class="lang-options">
+                <div class="lang-option" data-lang="en">
+                    <img src="https://flagcdn.com/w80/us.png" alt="USA Flag" onerror="this.style.display='none'">
+                    <span>English</span>
+                </div>
+                <div class="lang-option" data-lang="es">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/Flag_of_Spain_%28civil%29.svg" alt="Map of South America" onerror="this.style.display='none'">
+                    <span>Español</span>
+                </div>
+                <div class="lang-option" data-lang="fr">
+                    <img src="https://flagcdn.com/w80/fr.png" alt="French Flag" onerror="this.style.display='none'">
+                    <span>Français</span>
+                </div>
+                <div class="lang-option" data-lang="pt">
+                    <img src="https://flagcdn.com/w80/pt.png" alt="Portuguese Flag" onerror="this.style.display='none'">
+                    <span>Português</span>
+                </div>
+                <div class="lang-option" data-lang="ca">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/ce/Flag_of_Catalonia.svg" alt="Catalan Flag" onerror="this.style.display='none'">
+                    <span>Català</span>
+                </div>
+                <div class="lang-option" data-lang="eu">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Flag_of_the_Basque_Country.svg" alt="Basque Flag" onerror="this.style.display='none'">
+                    <span>Euskara</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-content">
-            <!-- 📍 YOUR INITIALS OR LOGO -->
             <a href="#" class="nav-logo">MSB</a>
             <div class="nav-links">
-                <a href="#about">About</a>
-                <a href="#projects">Projects</a>
-                <a href="#skills">Skills</a>
-                <a href="#contact">Contact</a>
+                <a href="#about" data-translate="nav_about">About</a>
+                <a href="#projects" data-translate="nav_projects">Projects</a>
+                <a href="#skills" data-translate="nav_skills">Skills</a>
+                <a href="#contact" data-translate="nav_contact">Contact</a>
             </div>
         </div>
     </nav>
@@ -310,64 +457,61 @@
 
         <!-- Hero Section -->
         <header id="home" class="hero">
-            <!-- 📍 YOUR NAME & TITLE -->
-            <h1>Hi, I'm <span>Salih</span>.</h1>
-            <p>A Mechatronics Engineer building the future, one line of code and one circuit at a time.</p>
-            <a href="#projects" class="btn">View My Work</a>
+            <h1 data-translate="hero_title">Hi, I'm <span>Salih</span>.</h1>
+            <p data-translate="hero_subtitle">A Mechatronics Engineer building the future, one line of code and one circuit at a time.</p>
+            <a href="#projects" class="btn" data-translate="hero_button">View My Work</a>
         </header>
 
         <!-- About Section -->
         <section id="about" class="section">
-            <h2>01. About Me</h2>
-            <!-- 📍 A QUICK BLURB ABOUT YOU. -->
-            <p style="max-width: 700px; margin: 0 auto; text-align: center; font-size: 1.1rem;">
+            <h2 data-translate="about_title">01. About Me</h2>
+            <p data-translate="about_text" style="max-width: 700px; margin: 0 auto; text-align: center; font-size: 1.1rem;">
                 I'm an engineering student, passionate about the intersection of mechanical, electrical, and software engineering. I thrive in challenging environments where I can design, build, and debug complex autonomous systems. From PCB design in KiCad to implementing control algorithms in C++, my goal is to create robust and intelligent machines.
             </p>
         </section>
 
         <!-- Projects Section -->
         <section id="projects" class="section">
-            <h2>02. Projects</h2>
+            <h2 data-translate="projects_title">02. Projects</h2>
             <div class="project-grid">
 
                 <!-- PROJECT 1 -->
                 <div class="project-card">
-                    <h3>Autonomous Delivery Drone</h3>
-                    <p>Designed and built a quadcopter from scratch. Implemented path-planning algorithms for autonomous navigation and payload delivery simulation in an urban environment.</p>
+                    <h3 data-translate="project1_title">Autonomous Delivery Drone</h3>
+                    <p data-translate="project1_desc">Designed and built a quadcopter from scratch. Implemented path-planning algorithms for autonomous navigation and payload delivery simulation in an urban environment.</p>
                     <div class="tech-stack">
                         <span class="tech-tag">C++</span>
                         <span class="tech-tag">PX4</span>
                         <span class="tech-tag">ROS</span>
                         <span class="tech-tag">SolidWorks</span>
                     </div>
-                    <!-- 📍 LINK TO YOUR DRIVE FOLDER, GITHUB, ETC. -->
-                    <a href="#" target="_blank" class="btn">View Project Files</a>
+                    <a href="#" target="_blank" class="btn" data-translate="project1_button">View Project Files</a>
                 </div>
 
                 <!-- PROJECT 2 -->
                 <div class="project-card">
-                    <h3>Robotic Arm Sorting System</h3>
-                    <p>Developed a 5-DOF robotic arm with computer vision to identify, sort, and place objects based on color and shape. Wrote the firmware and control software from the ground up.</p>
+                    <h3 data-translate="project2_title">Robotic Arm Sorting System</h3>
+                    <p data-translate="project2_desc">Developed a 5-DOF robotic arm with computer vision to identify, sort, and place objects based on color and shape. Wrote the firmware and control software from the ground up.</p>
                      <div class="tech-stack">
                         <span class="tech-tag">Python</span>
                         <span class="tech-tag">OpenCV</span>
                         <span class="tech-tag">Arduino</span>
                         <span class="tech-tag">Fusion 360</span>
                     </div>
-                    <a href="#" target="_blank" class="btn">See The Code</a>
+                    <a href="#" target="_blank" class="btn" data-translate="project2_button">See The Code</a>
                 </div>
 
                 <!-- PROJECT 3 -->
                 <div class="project-card">
-                    <h3>AGV for Warehouse Logistics</h3>
-                    <p>A miniature automated guided vehicle that uses LiDAR for SLAM and navigation. Designed for efficient material transport in a simulated warehouse environment.</p>
+                    <h3 data-translate="project3_title">AGV for Warehouse Logistics</h3>
+                    <p data-translate="project3_desc">A miniature automated guided vehicle that uses LiDAR for SLAM and navigation. Designed for efficient material transport in a simulated warehouse environment.</p>
                      <div class="tech-stack">
                         <span class="tech-tag">ROS2</span>
                         <span class="tech-tag">Python</span>
                         <span class="tech-tag">LiDAR</span>
                         <span class="tech-tag">Gazebo</span>
                     </div>
-                    <a href="#" target="_blank" class="btn">Check out the Simulation</a>
+                    <a href="#" target="_blank" class="btn" data-translate="project3_button">Check out the Simulation</a>
                 </div>
 
             </div>
@@ -375,30 +519,28 @@
         
         <!-- Skills Section -->
         <section id="skills" class="section">
-            <h2>03. Core Skills</h2>
+            <h2 data-translate="skills_title">03. Core Skills</h2>
             <div class="skills-grid">
-                <!-- 📍 ADD/REMOVE YOUR SKILLS -->
                 <div class="skill-item">C / C++</div>
                 <div class="skill-item">Python</div>
                 <div class="skill-item">ROS / ROS2</div>
                 <div class="skill-item">MATLAB</div>
                 <div class="skill-item">SolidWorks / CAD</div>
-                <div class="skill-item">Control Systems</div>
-                <div class="skill-item">PCB Design (KiCad)</div>
+                <div class="skill-item" data-translate="skill_controls">Control Systems</div>
+                <div class="skill-item" data-translate="skill_pcb">PCB Design (KiCad)</div>
                 <div class="skill-item">Linux</div>
                 <div class="skill-item">Git & GitHub</div>
-                <div class="skill-item">Computer Vision</div>
+                <div class="skill-item" data-translate="skill_cv">Computer Vision</div>
                 <div class="skill-item">Arduino / STM32</div>
-                <div class="skill-item">PLC Programming</div>
+                <div class="skill-item" data-translate="skill_plc">PLC Programming</div>
             </div>
         </section>
 
         <!-- Contact Section -->
         <section id="contact" class="section">
-            <h2>04. Get In Touch</h2>
-            <p style="text-align:center;">Have a question or want to collaborate? My inbox is always open.</p>
+            <h2 data-translate="contact_title">04. Get In Touch</h2>
+            <p style="text-align:center;" data-translate="contact_text">Have a question or want to collaborate? My inbox is always open.</p>
             <div class="contact-links">
-                <!-- 📍 YOUR SOCIAL/CONTACT LINKS -->
                 <a href="mailto:astronot168@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
                 <a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
                 <a href="https://github.com/varolkan" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
@@ -407,10 +549,141 @@
         
         <!-- Footer -->
         <footer>
-            <p>&copy; 2025 Salih // Designed & Built with love</p>
+            <p data-translate="footer_text">&copy; 2025 Salih // Designed & Built with love</p>
         </footer>
 
     </div>
+    
+    <!-- Language Selector Bottom Bar -->
+    <div class="lang-bottom-bar">
+        <button id="change-lang-btn" data-translate="change_lang_button">
+            <i class="fas fa-globe"></i> Change Language
+        </button>
+    </div>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- TRANSLATION DATA ---
+        const translations = {
+            'en': {
+                'nav_about': 'About', 'nav_projects': 'Projects', 'nav_skills': 'Skills', 'nav_contact': 'Contact',
+                'hero_title': "Hi, I'm <span>Salih</span>.", 'hero_subtitle': 'A Mechatronics Engineer building the future, one line of code and one circuit at a time.', 'hero_button': 'View My Work',
+                'about_title': '01. About Me', 'about_text': "I'm an engineering student, passionate about the intersection of mechanical, electrical, and software engineering. I thrive in challenging environments where I can design, build, and debug complex autonomous systems. From PCB design in KiCad to implementing control algorithms in C++, my goal is to create robust and intelligent machines.",
+                'projects_title': '02. Projects',
+                'project1_title': 'Autonomous Delivery Drone', 'project1_desc': 'Designed and built a quadcopter from scratch. Implemented path-planning algorithms for autonomous navigation and payload delivery simulation in an urban environment.', 'project1_button': 'View Project Files',
+                'project2_title': 'Robotic Arm Sorting System', 'project2_desc': 'Developed a 5-DOF robotic arm with computer vision to identify, sort, and place objects based on color and shape. Wrote the firmware and control software from the ground up.', 'project2_button': 'See The Code',
+                'project3_title': 'AGV for Warehouse Logistics', 'project3_desc': 'A miniature automated guided vehicle that uses LiDAR for SLAM and navigation. Designed for efficient material transport in a simulated warehouse environment.', 'project3_button': 'Check out the Simulation',
+                'skills_title': '03. Core Skills', 'skill_controls': 'Control Systems', 'skill_pcb': 'PCB Design (KiCad)', 'skill_cv': 'Computer Vision', 'skill_plc': 'PLC Programming',
+                'contact_title': '04. Get In Touch', 'contact_text': 'Have a question or want to collaborate? My inbox is always open.',
+                'footer_text': '&copy; 2025 Salih // Designed & Built with love', 'modal_title': 'Choose a Language', 'change_lang_button': '<i class="fas fa-globe"></i> Change Language'
+            },
+            'es': {
+                'nav_about': 'Sobre Mí', 'nav_projects': 'Proyectos', 'nav_skills': 'Habilidades', 'nav_contact': 'Contacto',
+                'hero_title': 'Hola, soy <span>Salih</span>.', 'hero_subtitle': 'Un Ingeniero Mecatrónico construyendo el futuro, una línea de código y un circuito a la vez.', 'hero_button': 'Ver Mi Trabajo',
+                'about_title': '01. Sobre Mí', 'about_text': 'Soy un estudiante de ingeniería, apasionado por la intersección de la ingeniería mecánica, eléctrica y de software. Me desenvuelvo en entornos desafiantes donde puedo diseñar, construir y depurar sistemas autónomos complejos. Desde el diseño de PCB en KiCad hasta la implementación de algoritmos de control en C++, mi objetivo es crear máquinas robustas e inteligentes.',
+                'projects_title': '02. Proyectos',
+                'project1_title': 'Dron de Reparto Autónomo', 'project1_desc': 'Diseñé y construí un cuadricóptero desde cero. Implementé algoritmos de planificación de rutas para navegación autónoma y simulación de entrega de carga en un entorno urbano.', 'project1_button': 'Ver Archivos',
+                'project2_title': 'Sistema de Clasificación con Brazo Robótico', 'project2_desc': 'Desarrollé un brazo robótico de 5-DOF con visión por computadora para identificar, clasificar y colocar objetos según su color y forma. Escribí el firmware y el software de control desde cero.', 'project2_button': 'Ver El Código',
+                'project3_title': 'AGV para Logística de Almacén', 'project3_desc': 'Un vehículo guiado automatizado en miniatura que utiliza LiDAR para SLAM y navegación. Diseñado para el transporte eficiente de materiales en un entorno de almacén simulado.', 'project3_button': 'Ver la Simulación',
+                'skills_title': '03. Habilidades Clave', 'skill_controls': 'Sistemas de Control', 'skill_pcb': 'Diseño de PCB (KiCad)', 'skill_cv': 'Visión por Computadora', 'skill_plc': 'Programación de PLC',
+                'contact_title': '04. Ponte en Contacto', 'contact_text': '¿Tienes alguna pregunta o quieres colaborar? Mi bandeja de entrada siempre está abierta.',
+                'footer_text': '&copy; 2025 Salih // Diseñado y construido con amor', 'modal_title': 'Elige un Idioma', 'change_lang_button': '<i class="fas fa-globe"></i> Cambiar Idioma'
+            },
+            'ca': {
+                'nav_about': 'Sobre Mi', 'nav_projects': 'Projectes', 'nav_skills': 'Habilitats', 'nav_contact': 'Contacte',
+                'hero_title': 'Hola, soc en <span>Salih</span>.', 'hero_subtitle': 'Un Enginyer Mecatrònic construint el futur, una línia de codi i un circuit a la vegada.', 'hero_button': 'Veure El Meu Treball',
+                'about_title': '01. Sobre Mi', 'about_text': "Soc un estudiant d'enginyeria, apassionat per la intersecció de l'enginyeria mecànica, elèctrica i de programari. M'agraden els entorns desafiadors on puc dissenyar, construir i depurar sistemes autònoms complexos. Des del disseny de PCB a KiCad fins a la implementació d'algoritmes de control en C++, el meu objectiu és crear màquines robustes i intel·ligents.",
+                'projects_title': '02. Projectes',
+                'project1_title': 'Dron de Lliurament Autònom', 'project1_desc': "He dissenyat i construït un quadrirrotor des de zero. He implementat algoritmes de planificació de rutes per a la navegació autònoma i la simulació de lliurament de càrrega en un entorn urbà.", 'project1_button': 'Veure Arxius',
+                'project2_title': 'Sistema de Classificació amb Braç Robòtic', 'project2_desc': "He desenvolupat un braç robòtic de 5-DOF amb visió per computador per identificar, classificar i col·locar objectes segons el seu color i forma. He escrit el firmware i el programari de control des de zero.", 'project2_button': 'Veure El Codi',
+                'project3_title': 'AGV per a Logística de Magatzem', 'project3_desc': "Un vehicle guiat automatitzat en miniatura que utilitza LiDAR per a SLAM i navegació. Dissenyat per al transport eficient de materials en un entorn de magatzem simulat.", 'project3_button': 'Veure la Simulació',
+                'skills_title': '03. Habilitats Clau', 'skill_controls': 'Sistemes de Control', 'skill_pcb': 'Disseny de PCB (KiCad)', 'skill_cv': 'Visió per Computador', 'skill_plc': 'Programació de PLC',
+                'contact_title': '04. Posa\'t en Contacte', 'contact_text': 'Tens alguna pregunta o vols col·laborar? La meva bústia sempre està oberta.',
+                'footer_text': '&copy; 2025 Salih // Dissenyat i construït amb amor', 'modal_title': 'Tria un Idioma', 'change_lang_button': '<i class="fas fa-globe"></i> Canviar Idioma'
+            },
+            'eu': {
+                'nav_about': 'Niri Buruz', 'nav_projects': 'Proiektuak', 'nav_skills': 'Gaitasunak', 'nav_contact': 'Kontaktua',
+                'hero_title': 'Kaixo, <span>Salih</span> naiz.', 'hero_subtitle': 'Ingeniari Mekatroniko bat etorkizuna eraikitzen, kode lerro bat eta zirkuitu bat aldi berean.', 'hero_button': 'Nire Lana Ikusi',
+                'about_title': '01. Niri Buruz', 'about_text': 'Ingeniaritza ikaslea naiz, ingeniaritza mekanikoaren, elektrikoaren eta softwarearen arteko elkarguneaz sutsua. Ingurune desafiatzaileetan hazten naiz, non sistema autonomo konplexuak diseinatu, eraiki eta araz ditzakedan. KiCad-en PCB diseinutik C++-n kontrol algoritmoak inplementatzeraino, nire helburua makina sendo eta adimentsuak sortzea da.',
+                'projects_title': '02. Proiektuak',
+                'project1_title': 'Bidalketa Drone Autonomoa', 'project1_desc': 'Quadkoptero bat diseinatu eta eraiki nuen hutsetik. Ibilbide-plangintzako algoritmoak inplementatu nituen nabigazio autonomorako eta zama-ematearen simulaziorako hiri-ingurune batean.', 'project1_button': 'Fitxategiak Ikusi',
+                'project2_title': 'Beso Robotikoko Sailkatze Sistema', 'project2_desc': '5-DOF-ko beso robotiko bat garatu nuen ordenagailu bidezko ikusmenarekin, objektuak kolorearen eta formaren arabera identifikatu, sailkatu eta kokatzeko. Firmwarea eta kontrol-softwarea hutsetik idatzi nituen.', 'project2_button': 'Kodea Ikusi',
+                'project3_title': 'Biltegiko Logistikarako AGV', 'project3_desc': 'LiDAR erabiltzen duen ibilgailu gidatu automatizatu txiki bat SLAM eta nabigaziorako. Materialen garraio eraginkorrerako diseinatua biltegi simulatu batean.', 'project3_button': 'Simulazioa Ikusi',
+                'skills_title': '03. Gaitasun Nagusiak', 'skill_controls': 'Kontrol Sistemak', 'skill_pcb': 'PCB Diseinua (KiCad)', 'skill_cv': 'Ordenagailu Bidezko Ikusmena', 'skill_plc': 'PLC Programazioa',
+                'contact_title': '04. Jarri Harremanetan', 'contact_text': 'Galderarik baduzu edo kolaboratu nahi duzu? Nire sarrera-ontzia beti irekita dago.',
+                'footer_text': '&copy; 2025 Salih // Maitasunez diseinatua eta eraikia', 'modal_title': 'Aukeratu Hizkuntza Bat', 'change_lang_button': '<i class="fas fa-globe"></i> Hizkuntza Aldatu'
+            },
+            'fr': {
+                'nav_about': 'À Propos', 'nav_projects': 'Projets', 'nav_skills': 'Compétences', 'nav_contact': 'Contact',
+                'hero_title': 'Bonjour, je suis <span>Salih</span>.', 'hero_subtitle': "Un Ingénieur en Mécatronique qui construit l'avenir, une ligne de code et un circuit à la fois.", 'hero_button': 'Voir Mon Travail',
+                'about_title': '01. À Propos de Moi', 'about_text': "Je suis un étudiant en ingénierie, passionné par l'intersection de l'ingénierie mécanique, électrique et logicielle. Je m'épanouis dans des environnements stimulants où je peux concevoir, construire et déboguer des systèmes autonomes complexes. De la conception de circuits imprimés sur KiCad à l'implémentation d'algorithmes de contrôle en C++, mon objectif est de créer des machines robustes et intelligentes.",
+                'projects_title': '02. Projets',
+                'project1_title': 'Drone de Livraison Autonome', 'project1_desc': "Conception et construction d'un quadricoptère à partir de zéro. Implémentation d'algorithmes de planification de trajectoire pour la navigation autonome et la simulation de livraison de charge utile en milieu urbain.", 'project1_button': 'Voir les Fichiers',
+                'project2_title': 'Système de Tri par Bras Robotisé', 'project2_desc': "Développement d'un bras robotique à 5 degrés de liberté avec vision par ordinateur pour identifier, trier et placer des objets en fonction de leur couleur et de leur forme. J'ai écrit le firmware et le logiciel de contrôle à partir de zéro.", 'project2_button': 'Voir Le Code',
+                'project3_title': "AGV pour la Logistique d'Entrepôt", 'project3_desc': "Un véhicule guidé automatisé miniature qui utilise le LiDAR pour le SLAM et la navigation. Conçu pour un transport efficace de matériaux dans un environnement d'entrepôt simulé.", 'project3_button': 'Voir la Simulation',
+                'skills_title': '03. Compétences Clés', 'skill_controls': 'Systèmes de Contrôle', 'skill_pcb': 'Conception de PCB (KiCad)', 'skill_cv': 'Vision par Ordinateur', 'skill_plc': 'Programmation PLC',
+                'contact_title': '04. Me Contacter', 'contact_text': 'Vous avez une question ou souhaitez collaborer ? Ma boîte de réception est toujours ouverte.',
+                'footer_text': '&copy; 2025 Salih // Conçu et réalisé avec amour', 'modal_title': 'Choisissez une langue', 'change_lang_button': '<i class="fas fa-globe"></i> Changer de langue'
+            },
+            'pt': {
+                'nav_about': 'Sobre Mim', 'nav_projects': 'Projetos', 'nav_skills': 'Competências', 'nav_contact': 'Contacto',
+                'hero_title': 'Olá, sou o <span>Salih</span>.', 'hero_subtitle': 'Um Engenheiro Mecatrónico a construir o futuro, uma linha de código e um circuito de cada vez.', 'hero_button': 'Ver O Meu Trabalho',
+                'about_title': '01. Sobre Mim', 'about_text': "Sou um estudante de engenharia, apaixonado pela interseção da engenharia mecânica, elétrica e de software. Prospeto em ambientes desafiadores onde posso projetar, construir e depurar sistemas autónomos complexos. Desde o design de PCB no KiCad até à implementação de algoritmos de controlo em C++, o meu objetivo é criar máquinas robustas e inteligentes.",
+                'projects_title': '02. Projetos',
+                'project1_title': 'Drone de Entrega Autónomo', 'project1_desc': 'Projetei e construí um quadricóptero de raiz. Implementei algoritmos de planeamento de rotas para navegação autónoma e simulação de entrega de carga em ambiente urbano.', 'project1_button': 'Ver Ficheiros',
+                'project2_title': 'Sistema de Triagem com Braço Robótico', 'project2_desc': 'Desenvolvi um braço robótico de 5-DOF com visão computacional para identificar, separar e colocar objetos com base na cor e forma. Escrevi o firmware e o software de controlo de raiz.', 'project2_button': 'Ver O Código',
+                'project3_title': 'AGV para Logística de Armazém', 'project3_desc': 'Um veículo guiado automatizado em miniatura que usa LiDAR para SLAM e navegação. Projetado para o transporte eficiente de materiais num ambiente de armazém simulado.', 'project3_button': 'Ver a Simulação',
+                'skills_title': '03. Competências Principais', 'skill_controls': 'Sistemas de Controlo', 'skill_pcb': 'Design de PCB (KiCad)', 'skill_cv': 'Visão Computacional', 'skill_plc': 'Programação de PLC',
+                'contact_title': '04. Entre em Contacto', 'contact_text': 'Tem alguma questão ou quer colaborar? A minha caixa de entrada está sempre aberta.',
+                'footer_text': '&copy; 2025 Salih // Desenhado e construído com amor', 'modal_title': 'Escolha um Idioma', 'change_lang_button': '<i class="fas fa-globe"></i> Mudar Idioma'
+            }
+        };
+
+        const languageModal = document.getElementById('language-modal');
+        const langOptions = document.querySelectorAll('.lang-option');
+        const changeLangBtn = document.getElementById('change-lang-btn');
+
+        // --- FUNCTIONS ---
+        const setLanguage = (lang) => {
+            const elements = document.querySelectorAll('[data-translate]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            document.documentElement.lang = lang; 
+            localStorage.setItem('portfolioLanguage', lang);
+        };
+
+        const showModal = () => {
+            languageModal.classList.add('visible');
+        };
+
+        const hideModal = () => {
+            languageModal.classList.remove('visible');
+        };
+
+        // --- EVENT LISTENERS ---
+        langOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const selectedLang = option.getAttribute('data-lang');
+                setLanguage(selectedLang);
+                hideModal();
+            });
+        });
+        
+        changeLangBtn.addEventListener('click', showModal);
+
+        // --- INITIALIZATION ---
+        const savedLang = localStorage.getItem('portfolioLanguage');
+
+        if (savedLang && translations[savedLang]) {
+            setLanguage(savedLang);
+        } else {
+            showModal();
+        }
+    });
+    </script>
 </body>
 </html>
